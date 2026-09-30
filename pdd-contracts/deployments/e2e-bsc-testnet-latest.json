@@ -1,0 +1,23 @@
+{
+  "network": "bsc-testnet",
+  "chainId": 97,
+  "vault": "0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+  "token": "0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4",
+  "inviteCode": "E2E-KAN-1790776038",
+  "codeHash": "0xbcd5a2fb3c86d7e0f9961225695bf19bdfc69a32c6a6c70aec3aa2e350c8ff92",
+  "helps": 5,
+  "claimBps": 500,
+  "vaultBeforeWei": "50000000000000000",
+  "claimedWei": "2500000000000000",
+  "vaultAfterWei": "47500000000000000",
+  "claimTx": "0xc736751bedcd8837a0b660be65362095f11af33f24bf8438164d9b30570f02af",
+  "claimReceiptLogs": 1,
+  "helpers": [
+    "0x7F2386191b6ED8a212786aB238AB0d7F2f1f66c0",
+    "0x7D00E7bD936B49f84B2e57308197a1B8b34B17d2",
+    "0xcA5d7a5b32AdD4aBbAb1F138aa4eA58123bB630E",
+    "0xA964959c805623FA400a26e35b1D7C4604383fC2",
+    "0xf39Ca012ecfba5CbeA13e69f3fEcEB02391C231e"
+  ],
+  "result": "PASS"
+}

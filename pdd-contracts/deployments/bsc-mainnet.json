@@ -1,0 +1,84 @@
+{
+  "network": "bsc-mainnet",
+  "chainId": 56,
+  "deployedAt": "2026-09-30T14:35:00Z",
+  "deployer": "0x006D9aD6e2bfD01da1dEF070788Ec226E4EfEAD2",
+  "status": "live",
+  "contracts": {
+    "PddBargainVault": "0xF36c678bE8cdCD464f933196B333E2c520dCb6A5",
+    "FlapTaxTokenV3": "0xdE176dA378a1517Fe5d262BA032700C350C27777",
+    "quoteTokenPDDB": "0x95b0409679b55c31772daa2fb4bee7b125b77521",
+    "pcsWbnbPddbPair": "0x6E57332778b0919476ebce09ffe58888d4cee9a7"
+  },
+  "params": {
+    "helpsRequired": 5,
+    "claimBps": 500,
+    "minHoldAmount": "1000000000000000",
+    "buyTaxBps": 0,
+    "sellTaxBps": 100,
+    "quoteToken": "0x95b0409679b55c31772daa2fb4bee7b125b77521",
+    "quoteSymbol": "PDDB",
+    "beneficiary": "0xF36c678bE8cdCD464f933196B333E2c520dCb6A5",
+    "metaCid": "bafkreicq4nnfnuoa7tficdyncima7u3azxxz6jk3ttrl6e53birmoviidm",
+    "vanitySalt": "0x9fdac7e5c2e645e15befa32bb7b4feb38c86a78d4565f366cc9c2e3c67b08949",
+    "bnbSpentForQuote": "0.1",
+    "pddbAcquired": "968531664787861715",
+    "initialBuyQuoteAmt": "920105081548468568",
+    "initialBuyNote": "Swapped 0.1 BNB→PDDB on PCS (~0.9685 PDDB), then Flap newTokenV6 quoteAmt=95% (~0.9201 PDDB)"
+  },
+  "txs": {
+    "vaultDeploy": "0x7b8dfd17fca37fd56c7840fa59c65288c7a22c69f30ca91a8b5ac9c4df8b1db3",
+    "swapBnbForPddb": "0xd3f0eb209c2470a659ee7bab4e7b4f0d9d05b5d30376f2e1a21f0107401c7372",
+    "approvePddbPortal": "0x448c44ef33e6b9c6457bd97809143744a46830342f6fc51597201e648f3a9066",
+    "flapNewTokenV6AndBuy": "0x3723c213271eabe80d74e9b9e6d71a0dfa9cf0b70cf4bf45e8ce6a289254b2a7",
+    "vaultSetToken": "0xe87cbd24ee7fbc3e8224f075a8a4cd924ef2166ad37e55dc12995b67f955b7cc"
+  },
+  "links": {
+    "flapBoard": "https://flap.sh/bnb/0xdE176dA378a1517Fe5d262BA032700C350C27777",
+    "vaultExplorer": "https://bscscan.com/address/0xF36c678bE8cdCD464f933196B333E2c520dCb6A5",
+    "tokenExplorer": "https://bscscan.com/address/0xdE176dA378a1517Fe5d262BA032700C350C27777",
+    "quoteTokenExplorer": "https://bscscan.com/address/0x95b0409679b55c31772daa2fb4bee7b125b77521",
+    "launchAndBuyTx": "https://bscscan.com/tx/0x3723c213271eabe80d74e9b9e6d71a0dfa9cf0b70cf4bf45e8ce6a289254b2a7",
+    "setTokenTx": "https://bscscan.com/tx/0xe87cbd24ee7fbc3e8224f075a8a4cd924ef2166ad37e55dc12995b67f955b7cc",
+    "vaultDeployTx": "https://bscscan.com/tx/0x7b8dfd17fca37fd56c7840fa59c65288c7a22c69f30ca91a8b5ac9c4df8b1db3",
+    "swapTx": "https://bscscan.com/tx/0xd3f0eb209c2470a659ee7bab4e7b4f0d9d05b5d30376f2e1a21f0107401c7372"
+  },
+  "verification": {
+    "tokenBuyTaxRate": 0,
+    "tokenSellTaxRate": 100,
+    "tokenQuoteToken": "0x95b0409679B55C31772daA2fB4bEE7B125B77521",
+    "tokenName": "真正的拼多多砍一刀",
+    "tokenSymbol": "拼多多",
+    "vaultToken": "0xdE176dA378a1517Fe5d262BA032700C350C27777",
+    "vaultQuoteToken": "0x95b0409679B55C31772daA2fB4bEE7B125B77521",
+    "portal": "0xe2cE6ab80874Fa9Fa2aAE65D277Dd6B8e65C9De0",
+    "taxHelper": "0x53841c73217735F37BC1775538b03b23feFD8346",
+    "newTokenV6Beneficiary": "0xF36c678bE8cdCD464f933196B333E2c520dCb6A5",
+    "vaultBalanceWeiAfterLaunch": "9646513717728879",
+    "note": "Buy tax 0%; vault holds residual ~0.00965 PDDB after launch. Sell tax 1% credits vault in PDDB. Claims pay PDDB (ERC20 quote)."
+  },
+  "userPoolHint": {
+    "address": "0x95b0409679b55c31772daa2fb4bee7b125b77521",
+    "resolvedAs": "ERC20 PDDB (拼多多 底池 quote asset). Not a Uniswap pair itself; PCS WBNB/PDDB pair is 0x6E57332778b0919476ebce09ffe58888d4cee9a7.",
+    "decision": "Used as Flap newTokenV6 quoteToken (not native BNB). Redeployed quote-aware vault; launched TOKEN_TAXED_V3 quoted in PDDB."
+  },
+  "superseded": {
+    "reason": "First mainnet launch used BNB quote; user required PDDB quote/pool 0x95b0…7521.",
+    "contracts": {
+      "PddBargainVault": "0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5",
+      "FlapTaxTokenV3": "0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777"
+    },
+    "params": {
+      "quoteToken": "BNB",
+      "initialBuyBNB": "0.2"
+    },
+    "txs": {
+      "vaultDeploy": "0x0707ae401cb96ec4eebde50f415132ce6d9f72e2185834d931a1710aef8a2fb1",
+      "flapNewTokenV6AndBuy": "0x223a27878b12cbfa160eec3e25b868288e079cf84c3734512c0d7abff50d057a",
+      "vaultSetToken": "0xe6661a7b243acffa13260daa2fa732d1f13a237d967b392a3d334e307332fd9b"
+    },
+    "links": {
+      "flapBoard": "https://flap.sh/bnb/0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777"
+    }
+  }
+}

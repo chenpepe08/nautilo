@@ -1,0 +1,50 @@
+{
+  "network": "bsc-testnet",
+  "chainId": 97,
+  "deployedAt": "2026-09-30T13:43:00Z",
+  "flapTokenLaunchedAt": "2026-09-30T14:05:00Z",
+  "deployer": "0x006D9aD6e2bfD01da1dEF070788Ec226E4EfEAD2",
+  "contracts": {
+    "PddBargainVault": "0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+    "FlapTaxTokenV3": "0x188AC6595a0de45f247358b42eA317edC79f7777",
+    "MockPddToken": "0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4"
+  },
+  "params": {
+    "helpsRequired": 5,
+    "claimBps": 500,
+    "minHoldAmount": "1000000000000000",
+    "buyTaxBps": 0,
+    "sellTaxBps": 100,
+    "quoteToken": "BNB",
+    "vaultQuoteToken": "0x0000000000000000000000000000000000000000",
+    "beneficiary": "0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+    "metaCid": "bafkreictawwg2tc74lkpyuzmolq7dxzy4pixzkx6f3b3thnr7angyhkrbe",
+    "vanitySalt": "0x74d4e1c9252cae9d9249df11dd478bdbd86acd6217456a481616054a273ff0da"
+  },
+  "txs": {
+    "flapNewTokenV6": "0x004213596b4758c1e4fc7b35acb54815832b47f4e9462ed2eaedc2a2029e456d",
+    "vaultSetToken": "0xbb8643e6114bfb26e4482815851de3c2690be572da3a210f7b9fabcd741c51b2"
+  },
+  "links": {
+    "flapBoard": "https://testnet.flap.sh/bnb/0x188AC6595a0de45f247358b42eA317edC79f7777?lang=zh",
+    "vaultExplorer": "https://testnet.bscscan.com/address/0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+    "tokenExplorer": "https://testnet.bscscan.com/address/0x188AC6595a0de45f247358b42eA317edC79f7777",
+    "launchTx": "https://testnet.bscscan.com/tx/0x004213596b4758c1e4fc7b35acb54815832b47f4e9462ed2eaedc2a2029e456d",
+    "setTokenTx": "https://testnet.bscscan.com/tx/0xbb8643e6114bfb26e4482815851de3c2690be572da3a210f7b9fabcd741c51b2"
+  },
+  "verification": {
+    "tokenBuyTaxRate": 0,
+    "tokenSellTaxRate": 100,
+    "taxHelperMarketingWallet": "0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+    "vaultToken": "0x188AC6595a0de45f247358b42eA317edC79f7777",
+    "portal": "0x5bEacaF7ABCbB3aB280e80D007FD31fcE26510e9",
+    "taxHelper": "0xD64441e5FcD02D342B8cf6eBA10Ef6E40d0dA90f"
+  },
+  "e2e": {
+    "result": "PASS",
+    "note": "Prior E2E used MockPddToken + funded vault; vault now wired to Flap token",
+    "claimTx": "0xc736751bedcd8837a0b660be65362095f11af33f24bf8438164d9b30570f02af",
+    "detailFile": "e2e-bsc-testnet-latest.json"
+  },
+  "mainnet": "NOT DEPLOYED — gated until explicit user authorization"
+}
