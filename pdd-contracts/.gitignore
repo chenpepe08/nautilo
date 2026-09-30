@@ -1,0 +1,20 @@
+# Foundry
+cache/
+out/
+broadcast/
+deployments/*.local.json
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+secrets.env
+**/secrets.env
+
+# Editor
+.DS_Store
+
+# Foundry broadcast may contain tx metadata — keep run logs but never env
+cache/
+out/
+broadcast/**/dry-run/

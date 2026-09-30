@@ -1,0 +1,38 @@
+{
+  "network": "bsc-testnet",
+  "chainId": 97,
+  "deployedAt": "2026-09-30T13:43:00Z",
+  "deployer": "0x006D9aD6e2bfD01da1dEF070788Ec226E4EfEAD2",
+  "contracts": {
+    "PddBargainVault": "0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+    "MockPddToken": "0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4"
+  },
+  "params": {
+    "helpsRequired": 5,
+    "claimBps": 500,
+    "minHoldAmount": "1000000000000000",
+    "buyTaxBps": 0,
+    "sellTaxBps": 100,
+    "vaultQuoteToken": "0x0000000000000000000000000000000000000000"
+  },
+  "explorers": {
+    "vault": "https://testnet.bscscan.com/address/0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7",
+    "token": "https://testnet.bscscan.com/address/0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4"
+  },
+  "e2e": {
+    "result": "PASS",
+    "claimTx": "0xc736751bedcd8837a0b660be65362095f11af33f24bf8438164d9b30570f02af",
+    "vaultBeforeWei": "50000000000000000",
+    "claimedWei": "2500000000000000",
+    "vaultAfterWei": "47500000000000000",
+    "detailFile": "e2e-bsc-testnet-latest.json"
+  },
+  "flap": {
+    "testBoard": "https://testnet.flap.sh/board?lang=zh",
+    "portalTestnet": "0x5bEacaF7ABCbB3aB280e80D007FD31fcE26510e9",
+    "taxHelperTestnet": "0xD64441e5FcD02D342B8cf6eBA10Ef6E40d0dA90f",
+    "briefPoolHint": "0x95b0409679b55c31772daa2fb4bee7b125b77521",
+    "briefPoolNote": "Mainnet ERC20 PDDB (PDD Holdings Inc), NOT Flap tax token, NOT on testnet. Do not use as product token."
+  },
+  "mainnet": "NOT DEPLOYED — gated until explicit user authorization"
+}
