@@ -1,12 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import {
+  useAccount,
+  useReadContract,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from 'wagmi'
+import { formatEther, zeroHash } from 'viem'
 import {
   ADDRESSES,
   CLAIM_BPS,
   HELPS_REQUIRED,
-  bargainAbi,
+  MIN_HOLD_AMOUNT,
   erc20Abi,
   isContractsLive,
+  vaultAbi,
 } from '../config/contracts'
 import {
   mockClaim,
@@ -15,37 +22,35 @@ import {
   mockIsHolder,
   mockRedeemInvite,
 } from '../lib/mockBargain'
-
-function bytes32ToCode(value: `0x${string}` | undefined): string | null {
-  if (!value || value === '0x' + '0'.repeat(64)) return null
-  try {
-    const hex = value.slice(2)
-    let s = ''
-    for (let i = 0; i < hex.length; i += 2) {
-      const c = parseInt(hex.slice(i, i + 2), 16)
-      if (c === 0) break
-      s += String.fromCharCode(c)
-    }
-    return s || value.slice(0, 10) + '…'
-  } catch {
-    return value.slice(0, 10) + '…'
-  }
-}
+import {
+  generateInviteCode,
+  recallInviteCode,
+  rememberInviteCode,
+} from '../lib/inviteCodes'
 
 export function useBargain() {
   const { address, isConnected } = useAccount()
   const [mockTick, setMockTick] = useState(0)
+  const [localCodeTick, setLocalCodeTick] = useState(0)
   const [celebration, setCelebration] = useState<{
     open: boolean
     title: string
     subtitle: string
   }>({ open: false, title: '', subtitle: '' })
   const [error, setError] = useState<string | null>(null)
-  const [pendingAction, setPendingAction] = useState<'create' | 'redeem' | 'claim' | null>(null)
+  const [pendingAction, setPendingAction] = useState<'create' | 'redeem' | 'claim' | null>(
+    null,
+  )
+  const [pendingCode, setPendingCode] = useState<string | null>(null)
 
   const bumpMock = () => setMockTick((n) => n + 1)
 
-  const { data: onChainBalance } = useReadContract({
+  const rememberedCode = useMemo(() => {
+    void localCodeTick
+    return recallInviteCode(address)
+  }, [address, localCodeTick])
+
+  const { data: onChainBalance, refetch: refetchBalance } = useReadContract({
     address: ADDRESSES.token,
     abi: erc20Abi,
     functionName: 'balanceOf',
@@ -53,18 +58,43 @@ export function useBargain() {
     query: { enabled: isContractsLive && Boolean(address) },
   })
 
-  const { data: onChainProgress } = useReadContract({
-    address: ADDRESSES.bargain,
-    abi: bargainAbi,
-    functionName: 'getProgress',
+  const { data: minHold } = useReadContract({
+    address: ADDRESSES.vault,
+    abi: vaultAbi,
+    functionName: 'minHoldAmount',
+    query: { enabled: isContractsLive },
+  })
+
+  const { data: onChainHelpsRequired } = useReadContract({
+    address: ADDRESSES.vault,
+    abi: vaultAbi,
+    functionName: 'helpsRequired',
+    query: { enabled: isContractsLive },
+  })
+
+  const { data: latestHash, refetch: refetchLatest } = useReadContract({
+    address: ADDRESSES.vault,
+    abi: vaultAbi,
+    functionName: 'latestInvite',
     args: address ? [address] : undefined,
     query: { enabled: isContractsLive && Boolean(address) },
   })
 
-  const { data: treasuryBalance } = useReadContract({
-    address: ADDRESSES.bargain,
-    abi: bargainAbi,
-    functionName: 'treasuryBalance',
+  const hasLatest =
+    Boolean(latestHash) && latestHash !== zeroHash && latestHash !== undefined
+
+  const { data: campaign, refetch: refetchCampaign } = useReadContract({
+    address: ADDRESSES.vault,
+    abi: vaultAbi,
+    functionName: 'campaignOf',
+    args: hasLatest && latestHash ? [latestHash] : undefined,
+    query: { enabled: isContractsLive && hasLatest },
+  })
+
+  const { data: vaultBalance, refetch: refetchVault } = useReadContract({
+    address: ADDRESSES.vault,
+    abi: vaultAbi,
+    functionName: 'vaultBalance',
     query: { enabled: isContractsLive },
   })
 
@@ -74,42 +104,73 @@ export function useBargain() {
   })
 
   useEffect(() => {
-    if (txSuccess && pendingAction) {
-      if (pendingAction === 'redeem') {
-        setCelebration({
-          open: true,
-          title: '砍成功！',
-          subtitle: '帮好友砍了一刀，拼多多快乐加倍 🎉',
-        })
-      } else if (pendingAction === 'claim') {
-        setCelebration({
-          open: true,
-          title: '领取成功！',
-          subtitle: `已发起领取金库 ${CLAIM_BPS / 100}% 的交易`,
-        })
-      }
-      setPendingAction(null)
-      resetWrite()
+    if (!txSuccess || !pendingAction) return
+
+    if (pendingAction === 'create' && pendingCode && address) {
+      rememberInviteCode(address, pendingCode)
+      setLocalCodeTick((n) => n + 1)
+      setCelebration({
+        open: true,
+        title: '口令已生成！',
+        subtitle: `口令 ${pendingCode} — 分享给好友帮你砍一刀`,
+      })
+    } else if (pendingAction === 'redeem') {
+      setCelebration({
+        open: true,
+        title: '砍成功！',
+        subtitle: '帮好友砍了一刀，拼多多快乐加倍',
+      })
+    } else if (pendingAction === 'claim') {
+      setCelebration({
+        open: true,
+        title: '领取成功！',
+        subtitle: `已发起领取金库 ${CLAIM_BPS / 100}% BNB 的交易`,
+      })
     }
-  }, [txSuccess, pendingAction, resetWrite])
+
+    setPendingAction(null)
+    setPendingCode(null)
+    resetWrite()
+    void refetchLatest()
+    void refetchCampaign()
+    void refetchVault()
+    void refetchBalance()
+  }, [
+    txSuccess,
+    pendingAction,
+    pendingCode,
+    address,
+    resetWrite,
+    refetchLatest,
+    refetchCampaign,
+    refetchVault,
+    refetchBalance,
+  ])
 
   const mockProgress = useMemo(() => {
     void mockTick
     return mockGetProgress(address)
   }, [address, mockTick])
 
+  const threshold = minHold ?? MIN_HOLD_AMOUNT
   const isHolder = isContractsLive
-    ? Boolean(onChainBalance && onChainBalance > 0n)
+    ? Boolean(onChainBalance !== undefined && onChainBalance >= threshold)
     : mockIsHolder(address)
+
+  const helpsRequired = isContractsLive
+    ? Number(onChainHelpsRequired ?? BigInt(HELPS_REQUIRED))
+    : HELPS_REQUIRED
 
   const progress = isContractsLive
     ? {
-        helps: Number(onChainProgress?.[0] ?? 0n),
-        required: Number(onChainProgress?.[1] ?? BigInt(HELPS_REQUIRED)),
-        claimed: Boolean(onChainProgress?.[2]),
-        code: bytes32ToCode(onChainProgress?.[3] as `0x${string}` | undefined),
+        helps: Number(campaign?.[1] ?? 0n),
+        required: helpsRequired,
+        claimed: Boolean(campaign?.[2]),
+        code: rememberedCode,
+        hasOnChainInvite: hasLatest,
+        claimedAmount: campaign?.[3] ?? 0n,
       }
-    : mockProgress
+    : { ...mockProgress, hasOnChainInvite: Boolean(mockProgress.code), claimedAmount: 0n }
 
   const createInvite = useCallback(async () => {
     setError(null)
@@ -133,20 +194,33 @@ export function useBargain() {
       return code
     }
 
+    if (rememberedCode && hasLatest) {
+      setCelebration({
+        open: true,
+        title: '口令已存在',
+        subtitle: `你的口令是 ${rememberedCode}`,
+      })
+      return rememberedCode
+    }
+
+    const code = generateInviteCode()
     try {
       setPendingAction('create')
+      setPendingCode(code)
       await writeContractAsync({
-        address: ADDRESSES.bargain,
-        abi: bargainAbi,
+        address: ADDRESSES.vault,
+        abi: vaultAbi,
         functionName: 'createInvite',
+        args: [code],
       })
-      return null
+      return code
     } catch (e) {
       setPendingAction(null)
+      setPendingCode(null)
       setError(e instanceof Error ? e.message : '生成口令失败')
       return null
     }
-  }, [address, isHolder, writeContractAsync])
+  }, [address, isHolder, rememberedCode, hasLatest, writeContractAsync])
 
   const redeemInvite = useCallback(
     async (code: string) => {
@@ -155,13 +229,14 @@ export function useBargain() {
         setError('请先连接钱包')
         return false
       }
-      if (!code.trim()) {
+      const trimmed = code.trim()
+      if (!trimmed) {
         setError('请输入口令')
         return false
       }
 
       if (!isContractsLive) {
-        const result = mockRedeemInvite(code.trim(), address)
+        const result = mockRedeemInvite(trimmed, address)
         if (!result.ok) {
           setError(result.message)
           return false
@@ -177,20 +252,11 @@ export function useBargain() {
 
       try {
         setPendingAction('redeem')
-        // Encode human code as bytes32 (pad UTF-8 bytes)
-        const encoder = new TextEncoder()
-        const bytes = encoder.encode(code.trim())
-        const hex =
-          '0x' +
-          Array.from(bytes)
-            .map((b) => b.toString(16).padStart(2, '0'))
-            .join('')
-            .padEnd(64, '0')
         await writeContractAsync({
-          address: ADDRESSES.bargain,
-          abi: bargainAbi,
-          functionName: 'redeemInvite',
-          args: [hex as `0x${string}`],
+          address: ADDRESSES.vault,
+          abi: vaultAbi,
+          functionName: 'help',
+          args: [trimmed],
         })
         return true
       } catch (e) {
@@ -224,12 +290,19 @@ export function useBargain() {
       return true
     }
 
+    const code = rememberedCode
+    if (!code) {
+      setError('本地没有保存口令。请用创建口令的浏览器领取，或重新记下口令后再试。')
+      return false
+    }
+
     try {
       setPendingAction('claim')
       await writeContractAsync({
-        address: ADDRESSES.bargain,
-        abi: bargainAbi,
+        address: ADDRESSES.vault,
+        abi: vaultAbi,
         functionName: 'claim',
+        args: [code],
       })
       return true
     } catch (e) {
@@ -237,9 +310,23 @@ export function useBargain() {
       setError(e instanceof Error ? e.message : '领取失败')
       return false
     }
-  }, [address, writeContractAsync])
+  }, [address, rememberedCode, writeContractAsync])
+
+  const restoreCode = useCallback(
+    (code: string) => {
+      if (!address) return
+      const trimmed = code.trim()
+      if (!trimmed) return
+      rememberInviteCode(address, trimmed)
+      setLocalCodeTick((n) => n + 1)
+    },
+    [address],
+  )
 
   const dismissCelebration = () => setCelebration((c) => ({ ...c, open: false }))
+
+  const vaultBalanceLabel =
+    vaultBalance !== undefined ? `${formatEther(vaultBalance)} tBNB` : null
 
   return {
     address,
@@ -248,15 +335,18 @@ export function useBargain() {
     isContractsLive,
     isBusy: txPending || pendingAction !== null,
     progress,
-    treasuryBalance,
+    vaultBalance,
+    vaultBalanceLabel,
+    treasuryBalance: vaultBalance,
     claimBps: CLAIM_BPS,
-    helpsRequired: HELPS_REQUIRED,
+    helpsRequired,
     error,
     celebration,
     dismissCelebration,
     createInvite,
     redeemInvite,
     claim,
+    restoreCode,
     setError,
   }
 }
