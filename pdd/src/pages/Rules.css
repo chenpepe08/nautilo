@@ -1,0 +1,82 @@
+.rules {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3.5rem;
+}
+
+.rules-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem 1rem;
+  background:
+    linear-gradient(180deg, #fff5f4 0%, #fff 100%);
+  border-bottom: 3px solid var(--pdd-red-soft);
+}
+
+.rules-hero img {
+  border-radius: 16px;
+  margin-bottom: 0.6rem;
+}
+
+.rules-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--pdd-red);
+}
+
+.rules-hero p {
+  margin: 0.5rem 0 0;
+  color: var(--pdd-ink-muted);
+}
+
+.rules section {
+  margin-bottom: 1.6rem;
+}
+
+.rules h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  color: var(--pdd-ink);
+}
+
+.rules p,
+.rules li {
+  color: var(--pdd-ink-muted);
+  line-height: 1.65;
+}
+
+.rules a {
+  color: var(--pdd-red);
+  font-weight: 700;
+}
+
+.rules-addrs dl {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.rules-addrs dt {
+  font-weight: 800;
+  color: var(--pdd-red);
+  font-size: 0.85rem;
+}
+
+.rules-addrs dd {
+  margin: 0 0 0.4rem;
+}
+
+.rules-addrs code {
+  display: block;
+  word-break: break-all;
+  background: #fff5f4;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+
+.rules-cta {
+  text-align: center;
+  margin-top: 2rem;
+}
