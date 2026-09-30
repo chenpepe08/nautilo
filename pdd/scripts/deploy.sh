@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy pdd/dist to the SSH host for pdd.aiflaps.com.
+# Deploy pdd/dist to pdd.aiflaps.com (nginx + optional certbot).
 # Loads credentials from Project store secrets.env — never commit that file.
 set -euo pipefail
 
@@ -13,6 +13,7 @@ fi
 
 # shellcheck disable=SC1090
 set -a
+# shellcheck source=/dev/null
 source "$SECRETS"
 set +a
 
@@ -20,7 +21,8 @@ set +a
 : "${SSH_USER:?}"
 : "${SSH_PASSWORD:?}"
 SITE_DOMAIN="${SITE_DOMAIN:-pdd.aiflaps.com}"
-REMOTE_DIR="${REMOTE_DIR:-/var/www/pdd}"
+REMOTE_HOME_DIR="\$HOME/domains/${SITE_DOMAIN}/public_html"
+REMOTE_WWW="/var/www/${SITE_DOMAIN}"
 
 cd "$ROOT"
 npm run build
@@ -33,45 +35,38 @@ export SSHPASS="$SSH_PASSWORD"
 SSH=(sshpass -e ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20)
 SCP=(sshpass -e scp -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20)
 
-echo "==> Ensuring remote dir $REMOTE_DIR"
-"${SSH[@]}" "${SSH_USER}@${SSH_HOST}" "mkdir -p '$REMOTE_DIR' && chmod u+rwx '$REMOTE_DIR' || true"
+echo "==> Upload to home staging"
+"${SSH[@]}" "${SSH_USER}@${SSH_HOST}" "mkdir -p domains/${SITE_DOMAIN}/public_html"
+"${SCP[@]}" -r "$ROOT/dist/"* "${SSH_USER}@${SSH_HOST}:domains/${SITE_DOMAIN}/public_html/"
 
-echo "==> Uploading dist"
-"${SCP[@]}" -r "$ROOT/dist/"* "${SSH_USER}@${SSH_HOST}:${REMOTE_DIR}/"
-
-echo "==> Writing nginx site snippet (best-effort)"
+echo "==> Install under /var/www + nginx (sudo)"
 "${SSH[@]}" "${SSH_USER}@${SSH_HOST}" bash -s <<EOF
-set -e
+set -euo pipefail
+PASS='${SSH_PASSWORD}'
 SITE='${SITE_DOMAIN}'
-DIR='${REMOTE_DIR}'
-if command -v nginx >/dev/null 2>&1 && [[ -w /etc/nginx/sites-available || -d /etc/nginx/conf.d ]]; then
-  CONF_DIR=/etc/nginx/conf.d
-  [[ -d /etc/nginx/sites-available ]] && CONF_DIR=/etc/nginx/sites-available
-  cat > /tmp/pdd.nginx.conf <<NGINX
+WWW='/var/www/${SITE_DOMAIN}'
+STAGE="\$HOME/domains/${SITE_DOMAIN}/public_html"
+echo "\$PASS" | sudo -S mkdir -p "\$WWW"
+echo "\$PASS" | sudo -S cp -a "\$STAGE/." "\$WWW/"
+echo "\$PASS" | sudo -S chown -R www-data:www-data "\$WWW"
+echo "\$PASS" | sudo -S tee /etc/nginx/sites-available/"\$SITE" >/dev/null <<NGINX
 server {
-  listen 80;
-  server_name \${SITE};
-  root \${DIR};
-  index index.html;
-  location / {
-    try_files \\\$uri \\\$uri/ /index.html;
-  }
+    listen 80;
+    listen [::]:80;
+    server_name \$SITE;
+    root \$WWW;
+    index index.html;
+    location / {
+        try_files \\\$uri \\\$uri/ /index.html;
+    }
 }
 NGINX
-  if [[ -w "\$CONF_DIR" ]]; then
-    cp /tmp/pdd.nginx.conf "\$CONF_DIR/pdd.conf"
-    nginx -t && (systemctl reload nginx || service nginx reload || true)
-  else
-    echo "No write access to \$CONF_DIR — left config at /tmp/pdd.nginx.conf"
-  fi
-else
-  echo "nginx not available or not writable; files uploaded to \$DIR"
-fi
-
-# Try certbot if root-ish
+echo "\$PASS" | sudo -S ln -sfn /etc/nginx/sites-available/"\$SITE" /etc/nginx/sites-enabled/"\$SITE"
+echo "\$PASS" | sudo -S nginx -t
+echo "\$PASS" | sudo -S systemctl reload nginx
 if command -v certbot >/dev/null 2>&1; then
-  certbot --nginx -d "\$SITE" --non-interactive --agree-tos -m admin@\${SITE} --redirect || true
+  echo "\$PASS" | sudo -S certbot --nginx -d "\$SITE" --non-interactive --agree-tos --register-unsafely-without-email --redirect || true
 fi
 EOF
 
-echo "Deploy finished for https://${SITE_DOMAIN} (HTTP maybe only if certbot skipped)"
+echo "Deployed https://${SITE_DOMAIN}"
