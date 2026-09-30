@@ -1,0 +1,71 @@
+.cele-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(120, 10, 8, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.cele-card {
+  position: relative;
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 24px;
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  border: 4px solid var(--pdd-red);
+  box-shadow: 0 16px 0 rgba(176, 18, 12, 0.25);
+  overflow: hidden;
+}
+
+.cele-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cele-confetti {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--pdd-red);
+}
+
+.cele-confetti:nth-child(3n) {
+  background: #ffc107;
+}
+.cele-confetti:nth-child(3n + 1) {
+  background: #ff6b4a;
+}
+.cele-confetti:nth-child(4n) {
+  background: #fff;
+  border: 1px solid var(--pdd-red);
+}
+
+.cele-stamp {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  color: var(--pdd-red);
+  border: 4px solid var(--pdd-red);
+  border-radius: 12px;
+  padding: 0.15rem 0.8rem;
+  margin-bottom: 0.75rem;
+  background: #fff5f4;
+}
+
+.cele-card h2 {
+  margin: 0.4rem 0 0.35rem;
+  font-size: 1.55rem;
+  color: var(--pdd-ink);
+}
+
+.cele-card p {
+  margin: 0 0 1.25rem;
+  color: var(--pdd-ink-muted);
+}

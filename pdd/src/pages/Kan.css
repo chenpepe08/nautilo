@@ -1,0 +1,264 @@
+.kan {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.kan-hero {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.kan-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 8vw, 3rem);
+  color: var(--pdd-red);
+}
+
+.kan-hero p {
+  margin: 0.4rem 0 0;
+  color: var(--pdd-ink-muted);
+}
+
+.kan-vault-bal {
+  margin-top: 0.35rem !important;
+  font-weight: 800;
+  color: var(--pdd-red) !important;
+}
+
+.kan-restore {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.kan-restore p {
+  margin: 0;
+  color: var(--pdd-ink-muted);
+  line-height: 1.5;
+}
+
+.kan-gate {
+  text-align: center;
+  padding: 2.5rem 1.25rem;
+  background: linear-gradient(180deg, #fff5f4, #fff);
+  border: 3px dashed var(--pdd-red);
+  border-radius: 20px;
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+}
+
+.kan-gate img {
+  border-radius: 16px;
+}
+
+.kan-gate h2 {
+  margin: 0;
+  color: var(--pdd-red);
+  font-family: var(--font-display);
+}
+
+.kan-gate p {
+  margin: 0 0 0.5rem;
+  color: var(--pdd-ink-muted);
+}
+
+.kan-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1rem;
+}
+
+.kan-panel {
+  background: #fff;
+  border: 2px solid #f0d0cc;
+  border-radius: 18px;
+  padding: 1.25rem;
+}
+
+.kan-panel-accent {
+  background: linear-gradient(165deg, #fff 0%, #fff5f4 100%);
+  border-color: var(--pdd-red);
+}
+
+.kan-panel h2 {
+  margin: 0 0 0.85rem;
+  font-size: 1.25rem;
+  color: var(--pdd-ink);
+}
+
+.kan-warn,
+.kan-create {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.kan-warn p,
+.kan-create p,
+.kan-hint {
+  margin: 0;
+  color: var(--pdd-ink-muted);
+  line-height: 1.5;
+}
+
+.kan-link {
+  color: var(--pdd-red);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.kan-code-box {
+  text-align: center;
+  padding: 1rem;
+  background: #fff5f4;
+  border-radius: 14px;
+  margin-bottom: 1rem;
+}
+
+.kan-code-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--pdd-ink-muted);
+  margin-bottom: 0.35rem;
+}
+
+.kan-code {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  color: var(--pdd-red);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.85rem;
+}
+
+.kan-progress {
+  margin: 1rem 0;
+}
+
+.kan-progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.kan-bar {
+  height: 14px;
+  border-radius: 999px;
+  background: #ffe3df;
+  overflow: hidden;
+}
+
+.kan-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b4a, var(--pdd-red));
+  border-radius: inherit;
+}
+
+.kan-knives {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.kan-knives span {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #c9a09a;
+  background: #fff;
+  border: 2px dashed #e8c4be;
+}
+
+.kan-knives span.on {
+  color: #fff;
+  background: var(--pdd-red);
+  border-style: solid;
+  border-color: var(--pdd-red);
+  animation: knife-pop 0.35s ease;
+}
+
+@keyframes knife-pop {
+  0% {
+    transform: scale(0.7) rotate(-12deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.pdd-btn-claim {
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  box-shadow: 0 5px 0 #000;
+}
+
+.pdd-btn-claim:hover:not(:disabled) {
+  background: #333;
+}
+
+.pdd-btn-claim:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.kan-field {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.85rem 0 1rem;
+}
+
+.kan-field span {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.kan-field input {
+  border: 2px solid #f0d0cc;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.kan-field input:focus {
+  border-color: var(--pdd-red);
+  box-shadow: 0 0 0 3px rgba(224, 46, 36, 0.15);
+}
+
+.kan-error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff0ee;
+  border-left: 4px solid var(--pdd-red);
+  color: #8b1a14;
+  font-weight: 600;
+  border-radius: 0 10px 10px 0;
+}
+
+.kan-mode {
+  text-align: center;
+  margin: 1.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--pdd-ink-muted);
+}
+
+@media (max-width: 760px) {
+  .kan-grid {
+    grid-template-columns: 1fr;
+  }
+}
