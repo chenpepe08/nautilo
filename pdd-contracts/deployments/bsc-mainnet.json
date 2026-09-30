@@ -1,0 +1,50 @@
+{
+  "network": "bsc-mainnet",
+  "chainId": 56,
+  "deployedAt": "2026-09-30T14:20:00Z",
+  "deployer": "0x006D9aD6e2bfD01da1dEF070788Ec226E4EfEAD2",
+  "contracts": {
+    "PddBargainVault": "0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5",
+    "FlapTaxTokenV3": "0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777"
+  },
+  "params": {
+    "helpsRequired": 5,
+    "claimBps": 500,
+    "minHoldAmount": "1000000000000000",
+    "buyTaxBps": 0,
+    "sellTaxBps": 100,
+    "quoteToken": "BNB",
+    "beneficiary": "0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5",
+    "metaCid": "bafkreicq4nnfnuoa7tficdyncima7u3azxxz6jk3ttrl6e53birmoviidm",
+    "vanitySalt": "0xd89b3de687e69cede8324da19b22c483ecba38e659323801bbf89c6083c12a36",
+    "initialBuyBNB": "0.2"
+  },
+  "txs": {
+    "vaultDeploy": "0x0707ae401cb96ec4eebde50f415132ce6d9f72e2185834d931a1710aef8a2fb1",
+    "flapNewTokenV6AndBuy": "0x223a27878b12cbfa160eec3e25b868288e079cf84c3734512c0d7abff50d057a",
+    "vaultSetToken": "0xe6661a7b243acffa13260daa2fa732d1f13a237d967b392a3d334e307332fd9b"
+  },
+  "links": {
+    "flapBoard": "https://flap.sh/bnb/0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777",
+    "vaultExplorer": "https://bscscan.com/address/0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5",
+    "tokenExplorer": "https://bscscan.com/address/0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777",
+    "launchAndBuyTx": "https://bscscan.com/tx/0x223a27878b12cbfa160eec3e25b868288e079cf84c3734512c0d7abff50d057a",
+    "setTokenTx": "https://bscscan.com/tx/0xe6661a7b243acffa13260daa2fa732d1f13a237d967b392a3d334e307332fd9b",
+    "vaultDeployTx": "https://bscscan.com/tx/0x0707ae401cb96ec4eebde50f415132ce6d9f72e2185834d931a1710aef8a2fb1"
+  },
+  "verification": {
+    "tokenBuyTaxRate": 0,
+    "tokenSellTaxRate": 100,
+    "taxHelperMarketingWallet": "0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5",
+    "vaultToken": "0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777",
+    "portal": "0xe2cE6ab80874Fa9Fa2aAE65D277Dd6B8e65C9De0",
+    "taxHelper": "0x53841c73217735F37BC1775538b03b23feFD8346",
+    "vaultBalanceWeiAfterLaunch": "0",
+    "note": "Buy tax 0% so initial 0.2 BNB buy does not credit vault; sell tax 1% will."
+  },
+  "userPoolHint": {
+    "address": "0x95b0409679b55c31772daa2fb4bee7b125b77521",
+    "resolvedAs": "Unrelated ERC20 PDDB (PDD Holdings Inc), not Flap tax token, not a pair. Not used.",
+    "decision": "Launched new Flap TOKEN_TAXED_V3 with BNB quote and vault beneficiary."
+  }
+}
