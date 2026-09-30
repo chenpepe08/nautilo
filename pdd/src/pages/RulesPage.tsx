@@ -18,11 +18,13 @@ export function RulesPage() {
           <strong>{TOKEN_META.symbol}</strong>，余额达到合约门槛）才能点击「生成口令」。未持币用户仍可粘贴他人口令帮砍。
         </p>
         <p>
-          卖出税率 <strong>1%</strong> 进入金库合约；买入税 <strong>0%</strong>。正式税币将在{' '}
+          报价资产为 <strong>{TOKEN_META.quote}</strong>。买入税{' '}
+          <strong>{TOKEN_META.buyTax}</strong>；卖出税 <strong>{TOKEN_META.sellTax}</strong>{' '}
+          进入金库 Vault。请在{' '}
           <a href={TOKEN_META.flapBoard} target="_blank" rel="noreferrer">
-            Flap 测试网
+            Flap 测试网 BNB 池
           </a>{' '}
-          发射，金库受益地址为 Vault。当前测试阶段可用 Mock「拼多多」代币验证流程。
+          购买「{TOKEN_META.symbol}」。
         </p>
       </section>
 
@@ -59,13 +61,19 @@ export function RulesPage() {
       <section className="rules-addrs">
         <h2>6. 测试网合约地址</h2>
         <dl>
-          <dt>Token（Mock，待换 Flap）</dt>
+          <dt>Flap 税币（拼多多）</dt>
           <dd>
             <code>{ADDRESSES.token}</code>
           </dd>
           <dt>Vault（金库 + 砍一刀）</dt>
           <dd>
             <code>{ADDRESSES.vault}</code>
+          </dd>
+          <dt>Flap Board</dt>
+          <dd>
+            <a href={TOKEN_META.flapBoard} target="_blank" rel="noreferrer">
+              {TOKEN_META.flapBoard}
+            </a>
           </dd>
         </dl>
       </section>

@@ -80,10 +80,9 @@ export function KanPage() {
             {!isHolder ? (
               <div className="kan-warn">
                 <p>
-                  当前钱包未达到持币门槛（需持有「{TOKEN_META.symbol}」）。
-                  {TOKEN_META.isMockToken
-                    ? ' 目前为测试 Mock 代币，Flap 正式税币上线前需从部署方获取测试币。'
-                    : ' 请先购买后再生成口令。'}
+                  当前钱包未达到持币门槛（需持有「{TOKEN_META.symbol}」）。请先在 Flap
+                  测试网 BNB 池购买后再生成口令（买税 {TOKEN_META.buyTax} · 卖税{' '}
+                  {TOKEN_META.sellTax} 入金库）。
                 </p>
                 <a
                   className="pdd-btn pdd-btn-primary"
@@ -232,11 +231,8 @@ export function KanPage() {
 
       <p className="kan-mode">
         {isContractsLive
-          ? `BSC 测试网合约已连接 · Vault ${ADDRESSES.vault.slice(0, 8)}…`
+          ? `BSC 测试网 · Flap 代币 ${ADDRESSES.token.slice(0, 8)}… · Vault ${ADDRESSES.vault.slice(0, 8)}…`
           : '演示模式：口令存于本机，合约地址到位后自动切真实交易'}
-        {TOKEN_META.isMockToken && isContractsLive
-          ? ' · 持币检测使用 Mock 代币（Flap 税币待上线）'
-          : ''}
       </p>
     </div>
   )

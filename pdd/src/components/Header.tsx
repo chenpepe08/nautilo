@@ -1,7 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Link, NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { TOKEN_META, isContractsLive } from '../config/contracts'
+import { isContractsLive } from '../config/contracts'
 import './Header.css'
 
 export function Header() {
@@ -31,8 +31,8 @@ export function Header() {
 
       <div className="pdd-header-actions">
         {!isContractsLive && <span className="pdd-badge-mock">演示模式</span>}
-        {isContractsLive && TOKEN_META.isMockToken && (
-          <span className="pdd-badge-mock">测试网 · Mock 币</span>
+        {isContractsLive && (
+          <span className="pdd-badge-mock">BSC 测试网 · Flap</span>
         )}
         <ConnectButton
           chainStatus="icon"

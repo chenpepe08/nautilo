@@ -80,7 +80,8 @@ export function HomePage() {
           <div>
             <h2>代币：{TOKEN_META.name}</h2>
             <p>
-              符号 <strong>{TOKEN_META.symbol}</strong> · 买税 0% · 卖税 1% 入金库 · BSC 测试网先行
+              符号 <strong>{TOKEN_META.symbol}</strong> · 报价 {TOKEN_META.quote} · 买税{' '}
+              {TOKEN_META.buyTax} · 卖税 {TOKEN_META.sellTax} 入金库 · BSC 测试网
             </p>
           </div>
           <a

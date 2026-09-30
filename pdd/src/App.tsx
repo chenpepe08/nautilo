@@ -19,8 +19,12 @@ export default function App() {
         </main>
         <footer className="pdd-footer">
           <span>拼多多 · 真正的拼多多砍一刀</span>
-          <a href="https://testnet.flap.sh/board?lang=zh" target="_blank" rel="noreferrer">
-            Flap 测试网
+          <a
+            href="https://testnet.flap.sh/bnb/0x188AC6595a0de45f247358b42eA317edC79f7777?lang=zh"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Flap 测试网 BNB 池
           </a>
           <span>pdd.aiflaps.com</span>
         </footer>

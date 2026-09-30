@@ -2,7 +2,7 @@ import type { Address, Abi } from 'viem'
 
 /**
  * BSC testnet (97) addresses from contracts handoff.
- * Env vars override hardcoded defaults for Flap token swap later.
+ * Env vars override hardcoded defaults.
  */
 const ZERO = '0x0000000000000000000000000000000000000000' as const
 
@@ -15,8 +15,12 @@ function addr(env: string | undefined, fallback: Address): Address {
 export const VAULT_TESTNET =
   '0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7' as const satisfies Address
 
-/** MockPddToken until Flap tax token launches + vault.setToken */
+/** Flap TOKEN_TAXED_V3 — matches vault.token() after setToken */
 export const TOKEN_TESTNET =
+  '0x188AC6595a0de45f247358b42eA317edC79f7777' as const satisfies Address
+
+/** Legacy MockPddToken — superseded; keep for reference only */
+export const MOCK_TOKEN_LEGACY =
   '0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4' as const satisfies Address
 
 export const HELPS_REQUIRED = 5
@@ -25,7 +29,7 @@ export const CLAIM_BPS = 500 // 5% of vault BNB
 export const MIN_HOLD_AMOUNT = 10n ** 15n
 
 export const ADDRESSES = {
-  /** Holder-check ERC-20 (Mock now; swap after Flap launch) */
+  /** Holder-check ERC-20 (Flap tax token) */
   token: addr(import.meta.env.VITE_TOKEN_ADDRESS, TOKEN_TESTNET),
   /** PddBargainVault — receives BNB tax + invite/help/claim */
   vault: addr(import.meta.env.VITE_VAULT_ADDRESS, VAULT_TESTNET),
@@ -46,8 +50,12 @@ export const isContractsLive =
 export const TOKEN_META = {
   symbol: '拼多多',
   name: '真正的拼多多砍一刀',
-  flapBoard: 'https://testnet.flap.sh/board?lang=zh',
-  isMockToken: true,
+  flapBoard:
+    'https://testnet.flap.sh/bnb/0x188AC6595a0de45f247358b42eA317edC79f7777?lang=zh',
+  quote: 'BNB',
+  buyTax: '0%',
+  sellTax: '1%',
+  isMockToken: false,
   chainId: 97,
   chainName: 'BSC Testnet',
 } as const
