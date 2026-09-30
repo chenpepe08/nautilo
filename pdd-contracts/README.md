@@ -1,18 +1,21 @@
 # PDD Bargain Vault (砍一刀)
 
-BSC **testnet** treasury + bargain contracts for the PDD × Flap project.
+BSC treasury + bargain contracts for the PDD × Flap project.
 
 ## Deployed
 
-### BSC Mainnet (chainId 56) — production
+### BSC Mainnet (chainId 56) — production (PDDB quote)
 
 | Contract | Address |
 |---|---|
-| PddBargainVault | `0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5` |
-| Flap Tax Token V3 (拼多多) | `0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777` |
+| PddBargainVault | `0xF36c678bE8cdCD464f933196B333E2c520dCb6A5` |
+| Flap Tax Token V3 (拼多多) | `0xdE176dA378a1517Fe5d262BA032700C350C27777` |
+| Quote PDDB | `0x95b0409679b55c31772daa2fb4bee7b125b77521` |
 
-Board: https://flap.sh/bnb/0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777  
+Board: https://flap.sh/bnb/0xdE176dA378a1517Fe5d262BA032700C350C27777  
 See `deployments/bsc-mainnet.json`.
+
+Superseded BNB-quoted launch (do not use): vault `0xd751…04E5`, token `0xe4cb…7777`.
 
 ### BSC Testnet (chainId 97)
 
@@ -30,7 +33,7 @@ cd pdd-contracts
 forge test -vv
 ```
 
-Deploy (testnet only; load key from local env — never commit):
+Deploy (load key from local env — never commit):
 
 ```bash
 export DEPLOYER_PRIVATE_KEY=0x...
@@ -49,4 +52,4 @@ bash script/e2e-bsc-testnet.sh
 
 ## Design
 
-See [DESIGN.md](./DESIGN.md). **No mainnet deploy** until explicitly authorized.
+See [DESIGN.md](./DESIGN.md).

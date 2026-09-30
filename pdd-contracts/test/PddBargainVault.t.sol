@@ -22,7 +22,7 @@ contract PddBargainVaultTest is Test {
 
     function setUp() public {
         token = new MockPddToken();
-        vault = new PddBargainVault(address(token), owner, MIN_HOLD);
+        vault = new PddBargainVault(address(token), owner, MIN_HOLD, address(0));
 
         token.mint(alice, 10 ether);
         // Seed treasury as if Flap sell-tax arrived.

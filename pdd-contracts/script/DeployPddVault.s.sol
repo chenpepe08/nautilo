@@ -26,7 +26,8 @@ contract DeployPddVault is Script {
             console2.log("MockPddToken", token);
         }
 
-        PddBargainVault vault = new PddBargainVault(token, deployer, minHold);
+        address quote = vm.envOr("QUOTE_TOKEN", address(0));
+        PddBargainVault vault = new PddBargainVault(token, deployer, minHold, quote);
         console2.log("PddBargainVault", address(vault));
         console2.log("owner", deployer);
         console2.log("token", token);

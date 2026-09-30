@@ -3,23 +3,22 @@ pragma solidity ^0.8.24;
 
 import {IPddBargainVault} from "./interfaces/IPddBargainVault.sol";
 
-interface IERC20Balance {
+interface IERC20Minimal {
     function balanceOf(address account) external view returns (uint256);
+    function transfer(address to, uint256 amount) external returns (bool);
 }
 
 /// @title PddBargainVault
-/// @notice Treasury that receives Flap sell-tax (quote = native BNB) and runs 砍一刀
-///         invite / help / claim: ~5 helps → claim ~5% of current vault balance.
-/// @dev Tax wiring (Flap TOKEN_TAXED_V3):
-///      - buyTaxRate = 0, sellTaxRate = 100 (1%), mktBps = 10000
-///      - beneficiary / funds-recipient = this contract
-///      Flap TaxProcessor forwards quote (BNB) here via receive(); we use VaultBaseV3-style
-///      balance-delta accounting so ERC20-quote pings also work if quote ever changes.
+/// @notice Treasury that receives Flap sell-tax in native BNB or an ERC20 quote,
+///         and runs 砍一刀 invite / help / claim (~5 helps → ~5% of vault).
+/// @dev quoteToken_ = address(0) → native BNB; otherwise ERC20 quote (e.g. PDDB).
 contract PddBargainVault is IPddBargainVault {
     uint16 public constant BPS_DENOM = 10_000;
 
     address public owner;
     address public token;
+    /// @notice Flap quote currency: address(0) = native BNB, else ERC20.
+    address public immutable quoteToken;
     uint256 public accountedQuote;
     uint32 public helpsRequired;
     uint16 public claimBps;
@@ -34,7 +33,6 @@ contract PddBargainVault is IPddBargainVault {
 
     mapping(bytes32 => Campaign) private _campaigns;
     mapping(bytes32 => mapping(address => bool)) public hasHelped;
-    /// @notice Most recent invite codeHash created by an address (UI convenience).
     mapping(address => bytes32) public latestInvite;
 
     bool private _locked;
@@ -51,21 +49,18 @@ contract PddBargainVault is IPddBargainVault {
         _;
     }
 
-    constructor(address token_, address owner_, uint256 minHoldAmount_) {
+    constructor(address token_, address owner_, uint256 minHoldAmount_, address quoteToken_) {
         if (owner_ == address(0)) revert ZeroAddress();
         owner = owner_;
-        token = token_; // may be address(0) until Flap token is known
+        token = token_;
+        quoteToken = quoteToken_;
         helpsRequired = 5;
-        claimBps = 500; // 5%
+        claimBps = 500;
         minHoldAmount = minHoldAmount_;
     }
 
-    // -------------------------------------------------------------------------
-    // Flap VaultBaseV3 discovery surface (native quote)
-    // -------------------------------------------------------------------------
-
-    function vaultQuoteToken() external pure returns (address) {
-        return address(0); // native BNB
+    function vaultQuoteToken() external view returns (address) {
+        return quoteToken;
     }
 
     function vaultSpecVersion() external pure returns (string memory) {
@@ -84,15 +79,9 @@ contract PddBargainVault is IPddBargainVault {
         );
     }
 
-    /// @dev Minimal UI schema blob for Flap-style discovery. Frontend may ignore this
-    ///      and use the documented ABI in docs/pdd-contract-integration.md instead.
     function vaultUISchema() external pure returns (string memory) {
         return "pdd-bargain-v1:createInvite,help,claim,sync,vaultBalance,campaignOf";
     }
-
-    // -------------------------------------------------------------------------
-    // Revenue accounting
-    // -------------------------------------------------------------------------
 
     receive() external payable {
         _syncRevenue();
@@ -103,11 +92,14 @@ contract PddBargainVault is IPddBargainVault {
     }
 
     function vaultBalance() public view returns (uint256) {
-        return address(this).balance;
+        if (quoteToken == address(0)) {
+            return address(this).balance;
+        }
+        return IERC20Minimal(quoteToken).balanceOf(address(this));
     }
 
     function _syncRevenue() internal {
-        uint256 bal = address(this).balance;
+        uint256 bal = vaultBalance();
         if (bal <= accountedQuote) return;
         uint256 newRevenue = bal - accountedQuote;
         accountedQuote = bal;
@@ -115,7 +107,6 @@ contract PddBargainVault is IPddBargainVault {
     }
 
     function _spend(uint256 amount) internal {
-        // Rule 3: every outflow must decrement accountedQuote in the same tx.
         uint256 baseline = accountedQuote;
         if (amount > baseline) {
             accountedQuote = 0;
@@ -124,9 +115,15 @@ contract PddBargainVault is IPddBargainVault {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Bargain flow
-    // -------------------------------------------------------------------------
+    function _pay(address to, uint256 amount) internal {
+        if (quoteToken == address(0)) {
+            (bool ok,) = payable(to).call{value: amount}("");
+            if (!ok) revert TransferFailed();
+        } else {
+            bool ok = IERC20Minimal(quoteToken).transfer(to, amount);
+            if (!ok) revert TransferFailed();
+        }
+    }
 
     function codeHashOf(string calldata code) public pure returns (bytes32) {
         bytes memory raw = bytes(code);
@@ -146,7 +143,7 @@ contract PddBargainVault is IPddBargainVault {
     function createInvite(string calldata code) external {
         _syncRevenue();
         if (token == address(0)) revert ZeroAddress();
-        if (IERC20Balance(token).balanceOf(msg.sender) < minHoldAmount) {
+        if (IERC20Minimal(token).balanceOf(msg.sender) < minHoldAmount) {
             revert InsufficientHoldings();
         }
 
@@ -160,10 +157,7 @@ contract PddBargainVault is IPddBargainVault {
             claimedAmount: 0
         });
         latestInvite[msg.sender] = hash;
-
-        // Emit a short hint (first 4 chars) for indexers; full code stays off-chain / in calldata.
-        string memory hint = _prefix(code, 4);
-        emit InviteCreated(hash, msg.sender, hint);
+        emit InviteCreated(hash, msg.sender, _prefix(code, 4));
     }
 
     function help(string calldata code) external {
@@ -187,7 +181,7 @@ contract PddBargainVault is IPddBargainVault {
         if (c.inviter == address(0) || c.claimed || c.helpCount < helpsRequired) {
             return 0;
         }
-        return (address(this).balance * uint256(claimBps)) / uint256(BPS_DENOM);
+        return (vaultBalance() * uint256(claimBps)) / uint256(BPS_DENOM);
     }
 
     function claim(string calldata code) external nonReentrant {
@@ -199,23 +193,17 @@ contract PddBargainVault is IPddBargainVault {
         if (c.claimed) revert AlreadyClaimed();
         if (c.helpCount < helpsRequired) revert NotEnoughHelps(c.helpCount, helpsRequired);
 
-        uint256 bal = address(this).balance;
+        uint256 bal = vaultBalance();
         uint256 amount = (bal * uint256(claimBps)) / uint256(BPS_DENOM);
         if (amount == 0) revert NothingToClaim();
 
         c.claimed = true;
         c.claimedAmount = amount;
         _spend(amount);
+        _pay(msg.sender, amount);
 
-        (bool ok,) = payable(msg.sender).call{value: amount}("");
-        if (!ok) revert TransferFailed();
-
-        emit Claimed(hash, msg.sender, amount, address(this).balance);
+        emit Claimed(hash, msg.sender, amount, vaultBalance());
     }
-
-    // -------------------------------------------------------------------------
-    // Admin (owner + Flap Guardian-compatible note: owner may transfer)
-    // -------------------------------------------------------------------------
 
     function setToken(address token_) external onlyOwner {
         if (token_ == address(0)) revert ZeroAddress();
@@ -241,10 +229,6 @@ contract PddBargainVault is IPddBargainVault {
         if (newOwner == address(0)) revert ZeroAddress();
         owner = newOwner;
     }
-
-    // -------------------------------------------------------------------------
-    // Internals
-    // -------------------------------------------------------------------------
 
     function _prefix(string calldata code, uint256 n) internal pure returns (string memory) {
         bytes memory raw = bytes(code);
