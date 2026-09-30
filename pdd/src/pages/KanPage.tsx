@@ -55,7 +55,7 @@ export function KanPage() {
           砍一刀
         </motion.h1>
         <p>
-          生成口令拉好友 · 满 {helpsRequired} 刀领金库 {claimBps / 100}% BNB
+          生成口令拉好友 · 满 {helpsRequired} 刀领金库 {claimBps / 100}% PDDB
         </p>
         {vaultBalanceLabel && (
           <p className="kan-vault-bal">金库余额 · {vaultBalanceLabel}</p>
@@ -81,7 +81,7 @@ export function KanPage() {
               <div className="kan-warn">
                 <p>
                   当前钱包未达到持币门槛（需持有「{TOKEN_META.symbol}」）。请先在 Flap
-                  请先在 Flap BNB 池购买后再生成口令（买税 {TOKEN_META.buyTax} · 卖税{' '}
+                  请先在 Flap（PDDB 底池）购买后再生成口令（买税 {TOKEN_META.buyTax} · 卖税{' '}
                   {TOKEN_META.sellTax} 入金库）。
                 </p>
                 <a
@@ -186,7 +186,7 @@ export function KanPage() {
               {progress.claimed
                 ? '已领取'
                 : canClaim
-                  ? `领取金库 ${claimBps / 100}% BNB`
+                  ? `领取金库 ${claimBps / 100}% PDDB`
                   : `再砍 ${Math.max(0, helpsRequired - progress.helps)} 刀可领`}
             </button>
           </section>

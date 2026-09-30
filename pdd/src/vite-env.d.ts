@@ -8,7 +8,7 @@ interface ImportMetaEnv {
   readonly VITE_TREASURY_ADDRESS?: string
   readonly VITE_BARGAIN_ADDRESS?: string
   readonly VITE_VAULT_ADDRESS?: string
-  readonly VITE_POOL_ADDRESS?: string
+  readonly VITE_QUOTE_ADDRESS?: string
 }
 
 interface ImportMeta {

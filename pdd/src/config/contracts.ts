@@ -1,8 +1,8 @@
 import type { Address, Abi } from 'viem'
 
 /**
- * BSC Mainnet (56) production defaults from contracts handoff.
- * Env vars override hardcoded defaults. Testnet constants kept for staging.
+ * BSC Mainnet (56) — PDDB-quoted production defaults (contracts handoff).
+ * Env vars override hardcoded defaults.
  */
 const ZERO = '0x0000000000000000000000000000000000000000' as const
 
@@ -11,30 +11,30 @@ function addr(env: string | undefined, fallback: Address): Address {
   return env as Address
 }
 
-/** BSC mainnet vault (金库 + 砍一刀) */
+/** Current mainnet vault (金库 + 砍一刀), quote = PDDB */
 export const VAULT_MAINNET =
-  '0xd75125f7e4dfE2aE12E87d05770Dcf2Ad91B04E5' as const satisfies Address
+  '0xF36c678bE8cdCD464f933196B333E2c520dCb6A5' as const satisfies Address
 
-/** Flap TOKEN_TAXED_V3 on mainnet — matches vault.token() */
+/** Flap TOKEN_TAXED_V3 (PDDB quote) — matches vault.token() */
 export const TOKEN_MAINNET =
-  '0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777' as const satisfies Address
+  '0xdE176dA378a1517Fe5d262BA032700C350C27777' as const satisfies Address
 
-/** Staging (BSC testnet) — not used by production defaults */
-export const VAULT_TESTNET =
-  '0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7' as const satisfies Address
-export const TOKEN_TESTNET =
-  '0x188AC6595a0de45f247358b42eA317edC79f7777' as const satisfies Address
+/** Flap quote asset — claims pay this ERC20 */
+export const QUOTE_PDDB =
+  '0x95b0409679b55c31772daa2fb4bee7b125b77521' as const satisfies Address
 
 export const HELPS_REQUIRED = 5
-export const CLAIM_BPS = 500 // 5% of vault BNB
+export const CLAIM_BPS = 500 // 5% of vault PDDB
 /** Matches vault.minHoldAmount (0.001 token @ 18 decimals) */
 export const MIN_HOLD_AMOUNT = 10n ** 15n
 
 export const ADDRESSES = {
   /** Holder-check ERC-20 (Flap tax token) */
   token: addr(import.meta.env.VITE_TOKEN_ADDRESS, TOKEN_MAINNET),
-  /** PddBargainVault — receives BNB tax + invite/help/claim */
+  /** PddBargainVault — receives PDDB sell-tax + invite/help/claim */
   vault: addr(import.meta.env.VITE_VAULT_ADDRESS, VAULT_MAINNET),
+  /** Quote ERC20 (PDDB) — claim payout asset */
+  quote: addr(import.meta.env.VITE_QUOTE_ADDRESS, QUOTE_PDDB),
   treasury: addr(
     import.meta.env.VITE_TREASURY_ADDRESS ?? import.meta.env.VITE_VAULT_ADDRESS,
     VAULT_MAINNET,
@@ -51,8 +51,9 @@ export const isContractsLive =
 export const TOKEN_META = {
   symbol: '拼多多',
   name: '真正的拼多多砍一刀',
-  flapBoard: 'https://flap.sh/bnb/0xe4cb08439C9F9FA1B46a101DF5215A1Ee8B27777',
-  quote: 'BNB',
+  flapBoard: 'https://flap.sh/bnb/0xdE176dA378a1517Fe5d262BA032700C350C27777',
+  quote: 'PDDB',
+  quoteSymbol: 'PDDB',
   buyTax: '0%',
   sellTax: '1%',
   isMockToken: false,
@@ -87,6 +88,7 @@ export const erc20Abi = [
 /**
  * PddBargainVault subset used by the dApp.
  * Plain string 口令 on-chain; storage is keccak256(bytes(code)).
+ * vaultBalance / claim payouts are PDDB (quote ERC20), not native BNB.
  */
 export const vaultAbi = [
   {
@@ -152,6 +154,13 @@ export const vaultAbi = [
     stateMutability: 'view',
     inputs: [],
     outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    type: 'function',
+    name: 'vaultQuoteToken',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'address' }],
   },
   {
     type: 'function',

@@ -124,7 +124,7 @@ export function useBargain() {
       setCelebration({
         open: true,
         title: '领取成功！',
-        subtitle: `已发起领取金库 ${CLAIM_BPS / 100}% BNB 的交易`,
+        subtitle: `已发起领取金库 ${CLAIM_BPS / 100}% PDDB 的交易`,
       })
     }
 
@@ -326,7 +326,7 @@ export function useBargain() {
   const dismissCelebration = () => setCelebration((c) => ({ ...c, open: false }))
 
   const vaultBalanceLabel =
-    vaultBalance !== undefined ? `${formatEther(vaultBalance)} BNB` : null
+    vaultBalance !== undefined ? `${formatEther(vaultBalance)} PDDB` : null
 
   return {
     address,
