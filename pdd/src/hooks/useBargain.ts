@@ -326,7 +326,7 @@ export function useBargain() {
   const dismissCelebration = () => setCelebration((c) => ({ ...c, open: false }))
 
   const vaultBalanceLabel =
-    vaultBalance !== undefined ? `${formatEther(vaultBalance)} tBNB` : null
+    vaultBalance !== undefined ? `${formatEther(vaultBalance)} BNB` : null
 
   return {
     address,

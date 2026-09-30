@@ -32,7 +32,7 @@ export function Header() {
       <div className="pdd-header-actions">
         {!isContractsLive && <span className="pdd-badge-mock">演示模式</span>}
         {isContractsLive && (
-          <span className="pdd-badge-mock">BSC 测试网 · Flap</span>
+          <span className="pdd-badge-mock">BSC 主网 · Flap</span>
         )}
         <ConnectButton
           chainStatus="icon"

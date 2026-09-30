@@ -22,7 +22,7 @@ export function RulesPage() {
           <strong>{TOKEN_META.buyTax}</strong>；卖出税 <strong>{TOKEN_META.sellTax}</strong>{' '}
           进入金库 Vault。请在{' '}
           <a href={TOKEN_META.flapBoard} target="_blank" rel="noreferrer">
-            Flap 测试网 BNB 池
+            Flap BNB 池
           </a>{' '}
           购买「{TOKEN_META.symbol}」。
         </p>
@@ -53,13 +53,13 @@ export function RulesPage() {
       <section>
         <h2>5. 网络与风险</h2>
         <ul>
-          <li>当前阶段：BSC 测试网（chainId 97）。主网需另行明确授权后切换。</li>
+          <li>当前：BSC 主网（chainId 56）。卖出税 1% 进入金库；买入税 0%。</li>
           <li>加密资产有风险，请自行判断；切勿泄露助记词 / 私钥。</li>
         </ul>
       </section>
 
       <section className="rules-addrs">
-        <h2>6. 测试网合约地址</h2>
+        <h2>6. 主网合约地址</h2>
         <dl>
           <dt>Flap 税币（拼多多）</dt>
           <dd>

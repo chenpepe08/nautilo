@@ -81,7 +81,7 @@ export function KanPage() {
               <div className="kan-warn">
                 <p>
                   当前钱包未达到持币门槛（需持有「{TOKEN_META.symbol}」）。请先在 Flap
-                  测试网 BNB 池购买后再生成口令（买税 {TOKEN_META.buyTax} · 卖税{' '}
+                  请先在 Flap BNB 池购买后再生成口令（买税 {TOKEN_META.buyTax} · 卖税{' '}
                   {TOKEN_META.sellTax} 入金库）。
                 </p>
                 <a
@@ -231,7 +231,7 @@ export function KanPage() {
 
       <p className="kan-mode">
         {isContractsLive
-          ? `BSC 测试网 · Flap 代币 ${ADDRESSES.token.slice(0, 8)}… · Vault ${ADDRESSES.vault.slice(0, 8)}…`
+          ? `BSC 主网 · Flap 代币 ${ADDRESSES.token.slice(0, 8)}… · Vault ${ADDRESSES.vault.slice(0, 8)}…`
           : '演示模式：口令存于本机，合约地址到位后自动切真实交易'}
       </p>
     </div>
