@@ -7,8 +7,10 @@ BSC **testnet** treasury + bargain contracts for the PDD × Flap project.
 | Contract | Address |
 |---|---|
 | PddBargainVault | `0xe5079825A0536a1d4A2FCd9e0d4E4ed587E780b7` |
-| MockPddToken | `0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4` |
+| Flap Tax Token V3 (拼多多) | `0x188AC6595a0de45f247358b42eA317edC79f7777` |
+| MockPddToken (legacy) | `0x1513eA7Bc3dbFB0890C71f9c7325987E8aD126d4` |
 
+Flap board: https://testnet.flap.sh/bnb/0x188AC6595a0de45f247358b42eA317edC79f7777?lang=zh  
 See `deployments/bsc-testnet.json` and Project store `docs/contracts-handoff.md`.
 
 ## Quick start
